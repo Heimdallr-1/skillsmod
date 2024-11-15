@@ -1,9 +1,9 @@
 package net.puffish.skillsmod.client.rendering;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -366,7 +366,7 @@ public class TextureBatchedRenderer {
 
 	public void draw() {
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-		RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+		RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
 		for (var entry : batch.entrySet()) {
 			RenderSystem.setShaderTexture(0, entry.getKey());
 			var bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);

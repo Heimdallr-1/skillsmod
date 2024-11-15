@@ -18,7 +18,6 @@ import net.minecraft.predicate.StatePredicate;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.TagKey;
@@ -112,7 +111,7 @@ public final class BuiltinJson {
 	public static Result<DamageType, Problem> parseDamageType(JsonElement element, DynamicRegistryManager manager) {
 		return parseSomething(
 				element,
-				manager.get(RegistryKeys.DAMAGE_TYPE),
+				manager.getOrThrow(RegistryKeys.DAMAGE_TYPE),
 				() -> "Expected damage type",
 				id -> "Unknown damage type `" + id + "`"
 		);
@@ -121,7 +120,7 @@ public final class BuiltinJson {
 	public static Result<RegistryEntryList<DamageType>, Problem> parseDamageTypeTag(JsonElement element, DynamicRegistryManager manager) {
 		return parseSomethingTag(
 				element,
-				manager.get(RegistryKeys.DAMAGE_TYPE),
+				manager.getOrThrow(RegistryKeys.DAMAGE_TYPE),
 				() -> "Expected damage type tag",
 				id -> "Unknown damage type tag `" + id + "`"
 		);
@@ -130,7 +129,7 @@ public final class BuiltinJson {
 	public static Result<RegistryEntryList<DamageType>, Problem> parseDamageTypeOrDamageTypeTag(JsonElement element, DynamicRegistryManager manager) {
 		return parseSomethingOrSomethingTag(
 				element,
-				manager.get(RegistryKeys.DAMAGE_TYPE),
+				manager.getOrThrow(RegistryKeys.DAMAGE_TYPE),
 				() -> "Expected damage type or damage type tag",
 				id -> "Unknown damage type or damage type tag `" + id + "`"
 		);
@@ -244,7 +243,7 @@ public final class BuiltinJson {
 		return parseFromIdentifier(
 				element,
 				id -> getOrCreateStat(
-						Registries.STAT_TYPE.getOrEmpty(
+						Registries.STAT_TYPE.getOptionalValue(
 								Identifier.splitOn(id.getNamespace(), '.')
 						).orElseThrow(),
 						Identifier.splitOn(id.getPath(), '.')
@@ -255,7 +254,7 @@ public final class BuiltinJson {
 	}
 
 	private static <T> Stat<T> getOrCreateStat(StatType<T> statType, Identifier id) {
-		return statType.getOrCreateStat(statType.getRegistry().getOrEmpty(id).orElseThrow());
+		return statType.getOrCreateStat(statType.getRegistry().getOptionalValue(id).orElseThrow());
 	}
 
 	public static Result<NbtCompound, Problem> parseNbt(JsonElement element) {
@@ -334,7 +333,7 @@ public final class BuiltinJson {
 					if (id.getNamespace().equals(SkillsAPI.MOD_ID)) {
 					id = Identifier.of("puffish_attributes", id.getPath());
 					}
-					return Registries.ATTRIBUTE.getOrEmpty(id).orElseThrow();
+					return Registries.ATTRIBUTE.getOptionalValue(id).orElseThrow();
 				},
 				() -> "Expected attribute",
 				id -> "Unknown attribute `" + id + "`"
@@ -383,7 +382,7 @@ public final class BuiltinJson {
 	private static <T> Result<T, Problem> parseSomething(JsonElement element, Registry<T> registry, Supplier<String> expected, Function<Identifier, String> unknown) {
 		return parseFromIdentifier(
 				element,
-				id -> registry.getOrEmpty(id).orElseThrow(),
+				id -> registry.getOptionalValue(id).orElseThrow(),
 				expected,
 				unknown
 		);
@@ -394,7 +393,7 @@ public final class BuiltinJson {
 			var s = element.getJson().getAsString();
 			var id = s.startsWith("#") ? Identifier.of(s.substring(1)) : Identifier.of(s);
 			try {
-				return Result.success(registry.getReadOnlyWrapper()
+				return Result.success(registry
 						.getOptional(TagKey.of(registry.getKey(), id))
 						.orElseThrow());
 			} catch (Exception ignored) {
@@ -411,14 +410,14 @@ public final class BuiltinJson {
 			if (s.startsWith("#")) {
 				var id = Identifier.of(s.substring(1));
 				try {
-					return Result.success(registry.getReadOnlyWrapper().getOptional(TagKey.of(registry.getKey(), id)).orElseThrow());
+					return Result.success(registry.getOptional(TagKey.of(registry.getKey(), id)).orElseThrow());
 				} catch (Exception ignored) {
 					return Result.failure(element.getPath().createProblem(unknown.apply(id)));
 				}
 			} else {
 				var id = Identifier.of(s);
 				try {
-					return Result.success(RegistryEntryList.of(registry.getEntry(RegistryKey.of(registry.getKey(), id)).orElseThrow()));
+					return Result.success(RegistryEntryList.of(registry.getEntry(id).orElseThrow()));
 				} catch (Exception ignored) {
 					return Result.failure(element.getPath().createProblem(unknown.apply(id)));
 				}

@@ -4,6 +4,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.puffish.skillsmod.access.DamageSourceAccess;
 import net.puffish.skillsmod.api.SkillsAPI;
 import net.puffish.skillsmod.experience.source.builtin.TakeDamageExperienceSource;
@@ -22,7 +23,7 @@ public abstract class PlayerEntityMixin {
 					target = "Lnet/minecraft/entity/player/PlayerEntity;setHealth(F)V"
 			)
 	)
-	private void injectAtSetHealth(DamageSource source, float damage, CallbackInfo ci) {
+	private void injectAtSetHealth(ServerWorld world, DamageSource source, float damage, CallbackInfo ci) {
 		if (((PlayerEntity) (Object) this) instanceof ServerPlayerEntity player) {
 			var weapon = ((DamageSourceAccess) source).getWeapon().orElse(ItemStack.EMPTY);
 			var takenDamage = Math.min(damage, player.getHealth());

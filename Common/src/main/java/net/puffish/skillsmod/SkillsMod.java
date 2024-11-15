@@ -563,7 +563,7 @@ public class SkillsMod {
 				category.getId(),
 				categoryData.getSpentPoints(category),
 				categoryData.getEarnedPoints(category),
-				player.getWorld().getGameRules().getBoolean(SkillsGameRules.ANNOUNCE_NEW_POINTS)
+				player.getServerWorld().getGameRules().getBoolean(SkillsGameRules.ANNOUNCE_NEW_POINTS)
 		));
 	}
 

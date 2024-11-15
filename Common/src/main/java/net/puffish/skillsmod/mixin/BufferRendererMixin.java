@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(BufferRenderer.class)
 public final class BufferRendererMixin {
 	@Inject(
-			method = "drawWithGlobalProgramInternal",
+			method = "drawWithGlobalProgram",
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/client/gl/VertexBuffer;draw(Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lnet/minecraft/client/gl/ShaderProgram;)V"

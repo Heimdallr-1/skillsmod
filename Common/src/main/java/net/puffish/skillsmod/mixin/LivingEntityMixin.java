@@ -50,7 +50,7 @@ public abstract class LivingEntityMixin {
 	}
 
 	@Inject(method = "applyDamage", at = @At("TAIL"))
-	private void injectAtApplyDamage(DamageSource source, float damage, CallbackInfo ci) {
+	private void injectAtApplyDamage(ServerWorld world, DamageSource source, float damage, CallbackInfo ci) {
 		var entity = ((LivingEntity) (Object) this);
 		var weapon = ((DamageSourceAccess) source).getWeapon().orElse(ItemStack.EMPTY);
 

@@ -3,9 +3,9 @@ package net.puffish.skillsmod.client.rendering;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -136,14 +136,14 @@ public class ConnectionBatchedRenderer {
 	}
 
 	public void draw() {
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
+		RenderSystem.setShader(ShaderProgramKeys.POSITION);
 
 		drawBatch(strokeBatch);
 		drawBatch(fillBatch);
 	}
 
 	private void drawBatch(Int2ObjectMap<List<TriangleEmit>> batch) {
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
+		RenderSystem.setShader(ShaderProgramKeys.POSITION);
 
 		for (var entry : batch.int2ObjectEntrySet()) {
 			var color = entry.getIntKey();

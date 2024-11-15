@@ -1,6 +1,7 @@
 package net.puffish.skillsmod.client.gui;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.toast.Toast;
@@ -19,8 +20,18 @@ public class SimpleToast implements Toast {
 	}
 
 	@Override
-	public Visibility draw(DrawContext context, ToastManager manager, long startTime) {
-		return toast.draw(context, manager, startTime);
+	public Visibility getVisibility() {
+		return toast.getVisibility();
+	}
+
+	@Override
+	public void update(ToastManager manager, long time) {
+		toast.update(manager, time);
+	}
+
+	@Override
+	public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
+		toast.draw(context, textRenderer, startTime);
 	}
 
 	@Override
