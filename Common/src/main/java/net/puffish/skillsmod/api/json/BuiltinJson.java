@@ -344,9 +344,9 @@ public final class BuiltinJson {
 		return parseFromString(
 				element,
 				s -> switch (s) {
-					case "addition" -> EntityAttributeModifier.Operation.ADD_VALUE;
-					case "multiply_base" -> EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE;
-					case "multiply_total" -> EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL;
+					case "add", "add_value", "addition" -> EntityAttributeModifier.Operation.ADD_VALUE;
+					case "multiply_base", "add_multiplied_base" -> EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE;
+					case "multiply_total", "add_multiplied_total" -> EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL;
 					default -> throw new RuntimeException();
 				},
 				() -> "Expected attribute operation",
