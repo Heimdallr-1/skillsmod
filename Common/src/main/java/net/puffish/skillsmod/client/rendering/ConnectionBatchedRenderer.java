@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -143,8 +144,8 @@ public class ConnectionBatchedRenderer {
 	}
 
 	private void drawBatch(Int2ObjectMap<List<TriangleEmit>> batch) {
+		RenderLayer.getGui().startDrawing();
 		RenderSystem.setShader(ShaderProgramKeys.POSITION);
-
 		for (var entry : batch.int2ObjectEntrySet()) {
 			var color = entry.getIntKey();
 			var a = (float) ((color >> 24) & 0xff) / 255f;
@@ -161,7 +162,8 @@ public class ConnectionBatchedRenderer {
 			}
 			BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 		}
-
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+		RenderLayer.getGui().endDrawing();
 		batch.clear();
 	}
 }

@@ -1,8 +1,5 @@
 package net.puffish.skillsmod.client.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.advancement.AdvancementObtainedStatus;
@@ -522,11 +519,6 @@ public class SkillsScreen extends Screen {
 	}
 
 	private void drawContent(DrawContext context, double mouseX, double mouseY) {
-		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-		RenderSystem.colorMask(true, true, true, true);
-		RenderSystem.disableBlend();
-		RenderSystem.enableDepthTest();
-
 		context.enableScissor(
 				contentPaddingLeft - 4,
 				contentPaddingTop - 4,
@@ -556,10 +548,12 @@ public class SkillsScreen extends Screen {
 		var matrices = context.getMatrices();
 		matrices.push();
 
-		matrices.translate(activeCategoryData.getX() + this.width / 2f, activeCategoryData.getY() + this.height / 2f, 0f);
+		matrices.translate(activeCategoryData.getX() + this.width / 2f, activeCategoryData.getY() + this.height / 2f, 1f);
 		matrices.scale(activeCategoryData.getScale(), activeCategoryData.getScale(), 1f);
 
 		drawBackground(context, activeCategory.background());
+
+		matrices.translate(0f, 0f, 1f);
 
 		var connectionRenderer = new ConnectionBatchedRenderer();
 
@@ -691,15 +685,8 @@ public class SkillsScreen extends Screen {
 			return;
 		}
 
-		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-		RenderSystem.colorMask(true, true, true, true);
-		RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
-		RenderSystem.disableDepthTest();
-
 		forEachCategory((i, category) -> context.drawGuiTexture(
-				RenderLayer::getGuiTextured,
+				RenderLayer::getGuiTexturedOverlay,
 				optActiveCategoryData.orElse(null) == category
 						? i == 0
 						? TAB_ABOVE_LEFT_SELECTED_TEXTURE
@@ -750,16 +737,9 @@ public class SkillsScreen extends Screen {
 			return;
 		}
 
-		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-		RenderSystem.colorMask(true, true, true, true);
-		RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
-		RenderSystem.disableDepthTest();
-
 		// bottom left
 		context.drawTexture(
-				RenderLayer::getGuiTextured,
+				RenderLayer::getGuiTexturedOverlay,
 				WINDOW_TEXTURE,
 				FRAME_PADDING,
 				this.height - FRAME_PADDING - HALF_FRAME_HEIGHT + 1,
@@ -773,7 +753,7 @@ public class SkillsScreen extends Screen {
 
 		// bottom right
 		context.drawTexture(
-				RenderLayer::getGuiTextured,
+				RenderLayer::getGuiTexturedOverlay,
 				WINDOW_TEXTURE,
 				this.width - FRAME_PADDING - HALF_FRAME_WIDTH + 1,
 				this.height - FRAME_PADDING - HALF_FRAME_HEIGHT + 1,
@@ -787,7 +767,7 @@ public class SkillsScreen extends Screen {
 
 		// left
 		context.drawTexture(
-				RenderLayer::getGuiTextured,
+				RenderLayer::getGuiTexturedOverlay,
 				WINDOW_TEXTURE,
 				FRAME_PADDING,
 				FRAME_PADDING + HALF_FRAME_HEIGHT,
@@ -803,7 +783,7 @@ public class SkillsScreen extends Screen {
 
 		// bottom
 		context.drawTexture(
-				RenderLayer::getGuiTextured,
+				RenderLayer::getGuiTexturedOverlay,
 				WINDOW_TEXTURE,
 				FRAME_PADDING + HALF_FRAME_WIDTH,
 				this.height - FRAME_PADDING - HALF_FRAME_HEIGHT + 1,
@@ -819,7 +799,7 @@ public class SkillsScreen extends Screen {
 
 		// right
 		context.drawTexture(
-				RenderLayer::getGuiTextured,
+				RenderLayer::getGuiTexturedOverlay,
 				WINDOW_TEXTURE,
 				this.width - FRAME_PADDING - HALF_FRAME_WIDTH + 1,
 				FRAME_PADDING + HALF_FRAME_HEIGHT,
@@ -836,7 +816,7 @@ public class SkillsScreen extends Screen {
 		if (small) {
 			// top left
 			context.drawTexture(
-					RenderLayer::getGuiTextured,
+					RenderLayer::getGuiTexturedOverlay,
 					WINDOW_TEXTURE,
 					FRAME_PADDING,
 					FRAME_PADDING + TABS_HEIGHT,
@@ -848,7 +828,7 @@ public class SkillsScreen extends Screen {
 					TEXTURE_HEIGHT
 			);
 			context.drawTexture(
-					RenderLayer::getGuiTextured,
+					RenderLayer::getGuiTexturedOverlay,
 					WINDOW_TEXTURE,
 					FRAME_PADDING,
 					FRAME_PADDING + TABS_HEIGHT + FRAME_CUT,
@@ -862,7 +842,7 @@ public class SkillsScreen extends Screen {
 
 			// top right
 			context.drawTexture(
-					RenderLayer::getGuiTextured,
+					RenderLayer::getGuiTexturedOverlay,
 					WINDOW_TEXTURE,
 					this.width - FRAME_PADDING - HALF_FRAME_WIDTH + 1,
 					FRAME_PADDING + TABS_HEIGHT,
@@ -874,7 +854,7 @@ public class SkillsScreen extends Screen {
 					TEXTURE_HEIGHT
 			);
 			context.drawTexture(
-					RenderLayer::getGuiTextured,
+					RenderLayer::getGuiTexturedOverlay,
 					WINDOW_TEXTURE,
 					this.width - FRAME_PADDING - HALF_FRAME_WIDTH + 1,
 					FRAME_PADDING + TABS_HEIGHT + FRAME_CUT,
@@ -888,7 +868,7 @@ public class SkillsScreen extends Screen {
 
 			// top
 			context.drawTexture(
-					RenderLayer::getGuiTextured,
+					RenderLayer::getGuiTexturedOverlay,
 					WINDOW_TEXTURE,
 					FRAME_PADDING + HALF_FRAME_WIDTH,
 					FRAME_PADDING + TABS_HEIGHT,
@@ -902,7 +882,7 @@ public class SkillsScreen extends Screen {
 					TEXTURE_HEIGHT
 			);
 			context.drawTexture(
-					RenderLayer::getGuiTextured,
+					RenderLayer::getGuiTexturedOverlay,
 					WINDOW_TEXTURE,
 					FRAME_PADDING + HALF_FRAME_WIDTH,
 					FRAME_PADDING + TABS_HEIGHT + FRAME_CUT,
@@ -918,7 +898,7 @@ public class SkillsScreen extends Screen {
 		} else {
 			// top left
 			context.drawTexture(
-					RenderLayer::getGuiTextured,
+					RenderLayer::getGuiTexturedOverlay,
 					WINDOW_TEXTURE,
 					FRAME_PADDING,
 					FRAME_PADDING + TABS_HEIGHT,
@@ -932,7 +912,7 @@ public class SkillsScreen extends Screen {
 
 			// top right
 			context.drawTexture(
-					RenderLayer::getGuiTextured,
+					RenderLayer::getGuiTexturedOverlay,
 					WINDOW_TEXTURE,
 					this.width - FRAME_PADDING - HALF_FRAME_WIDTH + 1,
 					FRAME_PADDING + TABS_HEIGHT,
@@ -946,7 +926,7 @@ public class SkillsScreen extends Screen {
 
 			// top
 			context.drawTexture(
-					RenderLayer::getGuiTextured,
+					RenderLayer::getGuiTexturedOverlay,
 					WINDOW_TEXTURE,
 					FRAME_PADDING + HALF_FRAME_WIDTH,
 					FRAME_PADDING + TABS_HEIGHT,
@@ -1045,7 +1025,7 @@ public class SkillsScreen extends Screen {
 			}
 
 			context.drawGuiTexture(
-					RenderLayer::getGuiTextured,
+					RenderLayer::getGuiTexturedOverlay,
 					EXPERIENCE_BAR_BACKGROUND_TEXTURE,
 					tmpX,
 					tmpY,
@@ -1055,7 +1035,7 @@ public class SkillsScreen extends Screen {
 			var width = Math.min(182, (int) (activeCategoryData.getExperienceProgress() * 183f));
 			if (width > 0) {
 				context.drawGuiTexture(
-						RenderLayer::getGuiTextured,
+						RenderLayer::getGuiTexturedOverlay,
 						EXPERIENCE_BAR_PROGRESS_TEXTURE,
 						182,
 						5,
