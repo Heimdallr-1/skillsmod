@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ModelTransformationMode;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class ItemBatchedRenderer {
 
 	private final Map<ComparableItemStack, List<Matrix4f>> batch = new HashMap<>();
+	private final ItemRenderState itemRenderState = new ItemRenderState();
 
 	public void emitItem(DrawContext context, ItemStack item, int x, int y) {
 		var emits = batch.computeIfAbsent(
@@ -43,14 +45,17 @@ public class ItemBatchedRenderer {
 
 			var client = MinecraftClient.getInstance();
 
-			var bakedModel = client.getItemRenderer().getModel(
+			client.getItemModelManager().update(
+					itemRenderState,
 					itemStack,
+					ModelTransformationMode.GUI,
+					false,
 					client.world,
 					client.player,
 					0
 			);
 
-			if (bakedModel.isSideLit()) {
+			if (itemRenderState.isSideLit()) {
 				DiffuseLighting.enableGuiDepthLighting();
 			} else {
 				DiffuseLighting.disableGuiDepthLighting();
@@ -61,10 +66,7 @@ public class ItemBatchedRenderer {
 
 			var layers = new HashSet<RenderLayerAccess>();
 
-			client.getItemRenderer().renderItem(
-					itemStack,
-					ModelTransformationMode.GUI,
-					false,
+			itemRenderState.render(
 					matrices,
 					layer -> {
 						var layerAccess = (RenderLayerAccess) layer;
@@ -73,8 +75,7 @@ public class ItemBatchedRenderer {
 						return immediate.getBuffer(layer);
 					},
 					0xF000F0,
-					OverlayTexture.DEFAULT_UV,
-					bakedModel
+					OverlayTexture.DEFAULT_UV
 			);
 
 			immediate.draw();

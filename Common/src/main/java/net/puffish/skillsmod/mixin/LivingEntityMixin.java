@@ -143,14 +143,14 @@ public abstract class LivingEntityMixin {
 	}
 
 	@ModifyArg(
-			method = "dropXp",
+			method = "dropExperience",
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V"
 			),
 			index = 2
 	)
-	private int injectAtDropXp(int droppedXp) {
+	private int injectAtDropExperience(int droppedXp) {
 		entityDroppedXp = droppedXp;
 		return droppedXp;
 	}
